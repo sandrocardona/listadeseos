@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import logo from './logo.svg';
 import './App.css';
 
+
+
 function PrintDeseo(props){
   return(
     <li>{props.wish}</li>
@@ -14,12 +16,21 @@ class DesireList extends Component{
       <ul>
         {this.props.wishes.map(d => {
           return(
-            <PrintDeseo wish={d} />
+            <li>
+              {d}&nbsp;
+              <Borrar deseo={d} quitar={(elemento) => this.props.quitar(elemento)}/>
+            </li>
           );
         })}
       </ul>
     );
   }
+}
+
+function Borrar(props){
+  return(
+    <button className='borrar' wish={props.wish} onClick={(wish) => props.quitar(props.wish)} >Borrar{props.wish}</button>
+  )
 }
 
 class Desire extends Component{
@@ -53,7 +64,16 @@ class App extends React.Component {
     });
   }
 
-  
+  quitar(elemento){
+    var aux = [];
+    if(this.state.deseos && this.state.deseos !== "null" && this.state.deseos !== "undefined"){
+      aux = this.state.deseos.slice();
+    }
+    aux = aux.filter(item => item !== elemento)
+    this.setState({
+      deseos: aux
+    });
+  }
 
   render(){
     return (
@@ -64,7 +84,7 @@ class App extends React.Component {
         </div>
         <div>
           <p><strong>Add your favourite present</strong></p>
-          <DesireList wishes={this.state.wishes} />
+          <DesireList wishes={this.state.wishes} quitar={(elemento) => this.quitar(elemento)} />
           <Desire onAddWish={this.handleAddWishes.bind(this)} />
         </div>
       </div>
